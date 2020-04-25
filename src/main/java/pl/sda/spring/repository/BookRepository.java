@@ -39,8 +39,12 @@ public class BookRepository {
         return bookToAdd;
     }
 
-    public boolean remove(Long id) {
-
+    public void remove(Long id) {
+        books.remove(books.stream()
+            .filter(book -> book.getId().equals(id))
+            .findFirst()
+            .orElseThrow()
+        );
     }
 
     private Long generateNextId() {
