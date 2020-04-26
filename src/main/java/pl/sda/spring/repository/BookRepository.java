@@ -14,17 +14,17 @@ public class BookRepository {
 
     private Set<Book> initialize() {
         return Set.of(new Book(1L, "Kaczanowski", "Testy", null),
-            new Book(2L, "Rowling", "Harry Potter", null),
-            new Book(3L, "Tolkien", "Wladca Pierscieni", null),
-            new Book(4L, "Bloch", "Effective Java", null),
-            new Book(5L, "Dostojewski", "Zbrodnia i kara", null));
+                new Book(2L, "Rowling", "Harry Potter", null),
+                new Book(3L, "Tolkien", "Wladca Pierscieni", null),
+                new Book(4L, "Bloch", "Effective Java", null),
+                new Book(5L, "Dostojewski", "Zbrodnia i kara", null));
     }
 
     public Optional<Book> borrowBook(String title, LocalDate borrowedTill) {
         Optional<Book> foundBook = books.stream()
-            .filter(book -> title.equals(book.getTitle()))
-            .filter(book -> book.getBorrowedTill() == null)
-            .findAny();
+                .filter(book -> title.equals(book.getTitle()))
+                .filter(book -> book.getBorrowedTill() == null)
+                .findAny();
         if (foundBook.isPresent()) {
             Book book = foundBook.get();
             book.setBorrowedTill(borrowedTill);
@@ -41,16 +41,26 @@ public class BookRepository {
 
     public void remove(Long id) {
         books.remove(books.stream()
-            .filter(book -> book.getId().equals(id))
-            .findFirst()
-            .orElseThrow()
+                .filter(book -> book.getId().equals(id))
+                .findFirst()
+                .orElseThrow()
         );
+    }
+
+    public Optional<Book> returnBook(Long id) {
+        Optional<Book> bookToReturn = books.stream()
+                .filter(book -> book.getId().equals(id))
+                .findFirst();
+        if(bookToReturn.isPresent()){
+            bookToReturn.get().setBorrowedTill(null);
+        }
+        return bookToReturn;
     }
 
     private Long generateNextId() {
         return books.stream()
-            .mapToLong(Book::getId)
-            .max()
-            .orElseThrow() + 1;
+                .mapToLong(Book::getId)
+                .max()
+                .orElseThrow() + 1;
     }
 }
